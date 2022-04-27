@@ -1,3 +1,4 @@
+using GeoComment.Data;
 using GeoComment.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,7 +13,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<DatabaseHandler>();
 
-builder.Services.AddDbContext<GeoCommentDBContext>(options =>
+builder.Services.AddDbContext<GeoCommentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
 var app = builder.Build();
