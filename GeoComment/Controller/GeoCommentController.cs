@@ -40,7 +40,9 @@ namespace GeoComment.Controller
         [Route("{id:int}")]
         public async Task<ActionResult> GetCommentTaskFromId(int id)
         {
-            var comment = await _ctx.Comments.FirstAsync(c => c.Id == id);
+            var comment = await _ctx.Comments.FirstOrDefaultAsync(c => c.Id == id);
+
+            if (comment == null) return NotFound(); //statuscode 404
             
             return Ok(comment);
         }
