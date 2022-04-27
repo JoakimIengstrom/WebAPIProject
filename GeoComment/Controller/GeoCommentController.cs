@@ -48,13 +48,15 @@ namespace GeoComment.Controller
         }
 
         [HttpGet]
-        public async Task<ActionResult<Array>> GetCommentWithinValues(
-            int minLon, int maxLon, int minLat, int maxLat)
+        public ActionResult<Array> GetCommentWithinValues(
+            int? minLon, int? maxLon, int? minLat, int? maxLat)
         {
             var comment = _ctx.Comments
                 .Where(c =>
                     c.Latitude >= minLat && c.Latitude <= maxLat &&
-                    c.Longitude >= minLon && c.Longitude <= maxLon);
+                    c.Longitude >= minLon && c.Longitude <= maxLon).ToArray();
+
+            if (comment.Length == 0) return BadRequest(); //statuscode 400
 
             return Ok(comment);
         }
