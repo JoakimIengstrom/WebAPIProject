@@ -46,5 +46,17 @@ namespace GeoComment.Controller
             
             return Ok(comment);
         }
+
+        [HttpGet]
+        public async Task<ActionResult<Array>> GetCommentWithinValues(
+            int minLon, int maxLon, int minLat, int maxLat)
+        {
+            var comment = _ctx.Comments
+                .Where(c =>
+                    c.Latitude >= minLat && c.Latitude <= maxLat &&
+                    c.Longitude >= minLon && c.Longitude <= maxLon);
+
+            return Ok(comment);
+        }
     }
 }
