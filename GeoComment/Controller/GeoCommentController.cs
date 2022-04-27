@@ -2,6 +2,7 @@
 using GeoComment.Models;
 using GeoComment.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GeoComment.Controller
 {
@@ -33,6 +34,15 @@ namespace GeoComment.Controller
             await _ctx.SaveChangesAsync();
 
             return Created("", newComment);
+        }
+
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult> GetCommentTaskFromId(int id)
+        {
+            var comment = await _ctx.Comments.FirstAsync(c => c.Id == id);
+            
+            return Ok(comment);
         }
     }
 }
