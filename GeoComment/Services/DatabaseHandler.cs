@@ -1,10 +1,12 @@
-﻿namespace GeoComment.Services
+﻿using GeoComment.Data;
+
+namespace GeoComment.Services
 {
     public class DatabaseHandler
     {
-        private readonly GeoCommentDBContext _ctx;
+        private readonly GeoCommentDbContext _ctx;
 
-        public DatabaseHandler(GeoCommentDBContext ctx)
+        public DatabaseHandler(GeoCommentDbContext ctx)
         {
             _ctx = ctx;
         }
