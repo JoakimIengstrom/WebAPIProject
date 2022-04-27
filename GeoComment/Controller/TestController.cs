@@ -18,7 +18,7 @@ namespace GeoComment.Controller
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetDB()
         {
-            await _databaseHandler.ResetDB();
+            await _databaseHandler.CreateDB();
             return Ok();
         }
     }

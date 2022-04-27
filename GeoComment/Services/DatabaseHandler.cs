@@ -11,25 +11,10 @@ namespace GeoComment.Services
             _ctx = ctx;
         }
 
-        public async Task ResetDB()
-        {
-            await CreateDB();
-            await Seed();
-        }
-
         public async Task CreateDB()
         {
             await _ctx.Database.EnsureDeletedAsync();
             await _ctx.Database.EnsureCreatedAsync();
         }
-
-        public async Task Seed()
-        {
-
-        }
-
-
-
-
     }
 }
