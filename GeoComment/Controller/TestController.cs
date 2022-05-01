@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoComment.Controller
 {
+    [ApiVersion("0.1")]
     [Route("test")]
     public class TestController : ControllerBase
     {
@@ -15,7 +16,6 @@ namespace GeoComment.Controller
 
         [Route("reset-db")]
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> ResetDB()
         {
             await _databaseHandler.CreateDB();
