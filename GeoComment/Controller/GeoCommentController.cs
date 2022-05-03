@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoComment.Controller
 {
-    
     [Route("api/geo-comments")]
     [ApiController]
     public class GeoCommentController : ControllerBase

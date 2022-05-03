@@ -2,6 +2,7 @@
 using GeoComment.Models;
 using GeoComment.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,31 +14,57 @@ namespace GeoComment.Controller
     public class GeoCommentControllerPartTWo : ControllerBase
     {
         private readonly GeoCommentDbContext _ctx;
-        private readonly DatabaseHandler _databaseHandler;
+        private readonly UserManager<User> _userManager;
 
-        public GeoCommentControllerPartTWo(GeoCommentDbContext ctx, DatabaseHandler databaseHandler)
+        public GeoCommentControllerPartTWo(GeoCommentDbContext ctx, UserManager<User> userManager)
         {
             _ctx = ctx;
-            _databaseHandler = databaseHandler;
+            _userManager = userManager;
+
         }
 
         [ApiVersion("0.2")]
-        [HttpPost]
         [Authorize]
-        public async Task <ActionResult<CommentResult>> NewComment(CommentInput input)
+        [HttpPost]
+        public async Task<ActionResult<CommentResult>> NewComment(
+            NewCommentV0_2 input)
         {
+            var user = await _userManager.GetUserAsync(User);
+
             var newComment = new CommentResult()
             {
-                Author = input.Author,
-                Message = input.Message,
+                Author = user.UserName,
+                Title = input.Body.Title,
                 Latitude = input.Latitude,
-                Longitude = input.Longitude
+                Longitude = input.Longitude,
+                Message = input.Body.Message
             };
 
             await _ctx.Comments.AddAsync(newComment);
             await _ctx.SaveChangesAsync();
 
-            return Created("", newComment);
+            var inputComment = await _ctx.Comments.FirstAsync(ic =>
+                ic.Title == newComment.Title &&
+                ic.Author == newComment.Author &&
+                ic.Message == newComment.Message &&
+                ic.Latitude == newComment.Latitude &&
+                ic.Longitude == newComment.Longitude);
+
+            var addedComment = new ReturnCommentV0_2()
+            {
+                id = inputComment.Id,
+                latitude = inputComment.Longitude,
+                longitude = inputComment.Longitude,
+                
+                body = new ReturnBodyV0_2()
+                {
+                    title = inputComment.Title,
+                    author = inputComment.Author,
+                    message = inputComment.Message,
+                }
+            };
+
+            return Created("", addedComment);
         }
 
         [ApiVersion("0.2")]
