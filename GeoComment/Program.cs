@@ -1,6 +1,7 @@
 using GeoComment.Data;
 using GeoComment.Models;
 using GeoComment.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,8 @@ builder.Services.AddIdentityCore<User>()
 builder.Services.AddDbContext<GeoCommentDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("default")));
 
-builder.Services.AddIdentityCore<User>();
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 builder.Services.AddApiVersioning(option =>
 {
@@ -40,6 +42,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
