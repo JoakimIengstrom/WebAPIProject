@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GeoComment.Controller
 {
-    [ApiVersion("0.1")]
     [Route("test")]
     public class TestController : ControllerBase
     {
@@ -14,6 +13,8 @@ namespace GeoComment.Controller
             _databaseHandler = databaseHandler;
         }
 
+        [ApiVersion("0.1")]
+        [ApiVersion("0.2")] //min postman behöver inte denna för att få pass!?!?!?!?
         [Route("reset-db")]
         [HttpGet]
         public async Task<IActionResult> ResetDB()

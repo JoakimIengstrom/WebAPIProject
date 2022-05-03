@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeoComment.Controller
 {
-    [ApiVersion("0.1")]
+    
     [Route("api/geo-comments")]
     [ApiController]
     public class GeoCommentController : ControllerBase
@@ -20,6 +20,7 @@ namespace GeoComment.Controller
             _databaseHandler = databaseHandler;
         }
 
+        [ApiVersion("0.1")]
         [HttpPost]
         public async Task <ActionResult<CommentResult>> NewComment(CommentInput input)
         {
@@ -37,6 +38,7 @@ namespace GeoComment.Controller
             return Created("", newComment);
         }
 
+        [ApiVersion("0.1")]
         [HttpGet]
         [Route("{id:int}")]
         public async Task<ActionResult> GetCommentTaskFromId(int id)
@@ -46,7 +48,8 @@ namespace GeoComment.Controller
             
             return Ok(comment);
         }
-        
+
+        [ApiVersion("0.1")]
         [HttpGet]
         public ActionResult<Array> GetCommentWithinValues(
             int? minLon, int? maxLon, int? minLat, int? maxLat)
