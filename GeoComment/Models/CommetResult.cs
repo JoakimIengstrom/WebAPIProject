@@ -22,7 +22,7 @@
     public class ReturnBodyV0_2
     {
         public string author { get; set; }
-        public string title { get; set; }
+        public string? title { get; set; }
         public string message { get; set; }
 
     }

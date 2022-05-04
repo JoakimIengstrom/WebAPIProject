@@ -53,7 +53,7 @@ namespace GeoComment.Controller
             var addedComment = new ReturnCommentV0_2()
             {
                 id = inputComment.Id,
-                latitude = inputComment.Longitude,
+                latitude = inputComment.Latitude,
                 longitude = inputComment.Longitude,
                 
                 body = new ReturnBodyV0_2()
@@ -67,16 +67,63 @@ namespace GeoComment.Controller
             return Created("", addedComment);
         }
 
-        [ApiVersion("0.2")]
         [HttpGet]
+        [ApiVersion("0.2")]
         [Route("{id:int}")]
-        public async Task<ActionResult> GetCommentTaskFromId(int id)
+        public ActionResult<CommentResult> GetCommentFromId(int id)
         {
-            var comment = await _ctx.Comments.FirstOrDefaultAsync(c => c.Id == id);
-            if (comment == null) return NotFound(); //statuscode 404
-            
+            if (id < 1 || id > _ctx.Comments.Count()) return NotFound();
+
+            var commentFromID = _ctx.Comments.First(c => c.Id == id);
+
+            var comment = new ReturnCommentV0_2()
+            {
+                id = commentFromID.Id,
+                latitude = commentFromID.Latitude,
+                longitude = commentFromID.Longitude,
+                body = new ReturnBodyV0_2()
+                {
+                    title = commentFromID.Title,
+                    author = commentFromID.Author,
+                    message = commentFromID.Message
+                }
+            };
+
             return Ok(comment);
         }
+
+        [HttpGet]
+        [ApiVersion("0.2")]
+        [Route("{username}")]
+        public ActionResult<Array> GetCommentFromUser(string username)
+        {
+            var commentsFromUser = _ctx.Comments
+                .Where(c => c.Author == username).ToList();
+
+            if (commentsFromUser.Count == 0) return NotFound();
+
+            var returnComments = new List<ReturnCommentV0_2>();
+
+            foreach (var usersComments in commentsFromUser)
+            {
+                var comments = new ReturnCommentV0_2()
+                {
+                    id = usersComments.Id,
+                    latitude = usersComments.Latitude,
+                    longitude = usersComments.Longitude,
+                    body = new ReturnBodyV0_2()
+                    {
+                        title = usersComments.Title,
+                        author = usersComments.Author,
+                        message = usersComments.Message
+                    }
+                };
+                returnComments.Add(comments);
+            }
+            return returnComments.ToArray();
+        }
+
+
 
         [ApiVersion("0.2")]
         [HttpGet]
