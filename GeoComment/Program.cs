@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,12 +33,34 @@ builder.Services.AddApiVersioning(option =>
     
 });
 
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VV";
+});
+
+builder.Services.AddSwaggerGen(o =>
+{
+    o.SwaggerDoc("v0.1", new OpenApiInfo {
+        Title = "GeoComment v0.1",
+        Version = "v0.1"
+    });
+    o.SwaggerDoc("v0.2", new OpenApiInfo
+    {
+        Title = "GeoComment v0.2",
+        Version = "v0.2"
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(o =>
+        {
+            o.SwaggerEndpoint($"/swagger/v0.1/swagger.json", "v0.1");
+            o.SwaggerEndpoint($"/swagger/v0.2/swagger.json", "v0.2");
+        });
 }
 
 app.UseHttpsRedirection();

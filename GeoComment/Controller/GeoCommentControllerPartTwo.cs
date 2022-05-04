@@ -11,12 +11,12 @@ namespace GeoComment.Controller
     
     [Route("api/geo-comments")]
     [ApiController]
-    public class GeoCommentControllerPartTWo : ControllerBase
+    public class GeoCommentControllerPartTwo : ControllerBase
     {
         private readonly GeoCommentDbContext _ctx;
         private readonly UserManager<User> _userManager;
 
-        public GeoCommentControllerPartTWo(GeoCommentDbContext ctx, UserManager<User> userManager)
+        public GeoCommentControllerPartTwo(GeoCommentDbContext ctx, UserManager<User> userManager)
         {
             _ctx = ctx;
             _userManager = userManager;
@@ -74,18 +74,18 @@ namespace GeoComment.Controller
         {
             if (id < 1 || id > _ctx.Comments.Count()) return NotFound();
 
-            var commentFromID = _ctx.Comments.First(c => c.Id == id);
+            var commentFromId = _ctx.Comments.First(c => c.Id == id);
 
             var comment = new ReturnCommentV0_2()
             {
-                id = commentFromID.Id,
-                latitude = commentFromID.Latitude,
-                longitude = commentFromID.Longitude,
+                id = commentFromId.Id,
+                latitude = commentFromId.Latitude,
+                longitude = commentFromId.Longitude,
                 body = new ReturnBodyV0_2()
                 {
-                    title = commentFromID.Title,
-                    author = commentFromID.Author,
-                    message = commentFromID.Message
+                    title = commentFromId.Title,
+                    author = commentFromId.Author,
+                    message = commentFromId.Message
                 }
             };
 
@@ -122,22 +122,39 @@ namespace GeoComment.Controller
             }
             return returnComments.ToArray();
         }
-
-
-
+        
         [ApiVersion("0.2")]
         [HttpGet]
-        public ActionResult<Array> GetCommentWithinValues(
+        public ActionResult<Array> GetCommentWithinRange(
             int? minLon, int? maxLon, int? minLat, int? maxLat)
         {
-            var comment = _ctx.Comments
+            var comments = _ctx.Comments
                 .Where(c =>
                     c.Latitude >= minLat && c.Latitude <= maxLat &&
-                    c.Longitude >= minLon && c.Longitude <= maxLon).ToArray();
+                    c.Longitude >= minLon && c.Longitude <= maxLon).ToList();
 
-            if (comment.Length == 0) return BadRequest(); //statuscode 400
+            if (comments.Count == 0) return BadRequest();
 
-            return Ok(comment);
+            var returnComments = new List<ReturnCommentV0_2>();
+            
+
+            foreach (var usersComments in comments)
+            {
+                var comment = new ReturnCommentV0_2()
+                {
+                    id = usersComments.Id,
+                    latitude = usersComments.Latitude,
+                    longitude = usersComments.Longitude,
+                    body = new ReturnBodyV0_2()
+                    {
+                        title = usersComments.Title,
+                        author = usersComments.Author,
+                        message = usersComments.Message
+                    }
+                };
+                returnComments.Add(comment);
+            }
+            return returnComments.ToArray();
         }
     }
 }
