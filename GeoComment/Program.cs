@@ -1,6 +1,7 @@
 using GeoComment.Data;
 using GeoComment.Models;
 using GeoComment.Services;
+using GeoComment.Swagger;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -36,19 +37,23 @@ builder.Services.AddApiVersioning(option =>
 builder.Services.AddVersionedApiExplorer(options =>
 {
     options.GroupNameFormat = "'v'VV";
+    options.SubstituteApiVersionInUrl = true;
 });
 
-builder.Services.AddSwaggerGen(o =>
+builder.Services.AddSwaggerGen(options =>
 {
-    o.SwaggerDoc("v0.1", new OpenApiInfo {
+    options.SwaggerDoc("v0.1", new OpenApiInfo {
         Title = "GeoComment v0.1",
         Version = "v0.1"
     });
-    o.SwaggerDoc("v0.2", new OpenApiInfo
+
+    options.SwaggerDoc("v0.2", new OpenApiInfo
     {
         Title = "GeoComment v0.2",
         Version = "v0.2"
     });
+
+    options.OperationFilter<AddApiVersionExampleValueOperationFilter>();
 });
 
 var app = builder.Build();
