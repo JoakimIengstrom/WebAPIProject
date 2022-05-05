@@ -20,7 +20,6 @@ namespace GeoComment.Controller
         {
             _ctx = ctx;
             _userManager = userManager;
-
         }
 
         [ApiVersion("0.2")]

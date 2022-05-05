@@ -31,7 +31,6 @@ builder.Services.AddApiVersioning(option =>
     option.AssumeDefaultVersionWhenUnspecified = true;
     option.ApiVersionReader =
         new QueryStringApiVersionReader("api-version");
-    
 });
 
 builder.Services.AddVersionedApiExplorer(options =>
@@ -42,6 +41,15 @@ builder.Services.AddVersionedApiExplorer(options =>
 
 builder.Services.AddSwaggerGen(options =>
 {
+    options.AddSecurityDefinition("BasicAuth", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic",
+        In = ParameterLocation.Header,
+        Description = "Basic Authorization header using the Basic scheme."
+    });
+    
     options.SwaggerDoc("v0.1", new OpenApiInfo {
         Title = "GeoComment v0.1",
         Version = "v0.1"
@@ -54,6 +62,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 
     options.OperationFilter<AddApiVersionExampleValueOperationFilter>();
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 var app = builder.Build();
