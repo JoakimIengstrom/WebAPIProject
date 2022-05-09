@@ -1,11 +1,12 @@
-﻿using GeoComment.Models;
+﻿using GeoComment.DTO;
+using GeoComment.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GeoComment.Controller
 {
-    [Route("api/user/register")]
+    [Route("api/user")]
     [ApiVersion("0.2")]
     [ApiController]
     public class UserController : ControllerBase
@@ -17,6 +18,7 @@ namespace GeoComment.Controller
             _userManager = userManager;
         }
 
+        [Route("register")]
         [HttpPost]
         public async Task<IActionResult> RegisterUser(NewUser newUser)
         {
@@ -44,6 +46,13 @@ namespace GeoComment.Controller
                     username = createdUser.UserName, id = createdUser.Id
                 });
 
+        }
+
+        [Route("login")]
+        [HttpPost]
+        public ActionResult newUser(userData newUser)
+        {
+            return Ok(newUser);
         }
     }
 }
