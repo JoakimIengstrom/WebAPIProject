@@ -21,9 +21,9 @@ namespace GeoComment.Controller
 
         [ApiVersion("0.1")]
         [HttpPost]
-        public async Task <ActionResult<CommentResult>> NewComment(CommentInput input)
+        public async Task <ActionResult<Comment>> NewComment(Comment input)
         {
-            var newComment = new CommentResult()
+            var newComment = new Comment()
             {
                 Author = input.Author,
                 Message = input.Message,
