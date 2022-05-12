@@ -15,6 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<DatabaseHandler>();
+builder.Services.AddScoped<CommentHandler>();
 
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<GeoCommentDbContext>();

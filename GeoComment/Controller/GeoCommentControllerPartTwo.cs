@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using GeoComment.Data;
 using GeoComment.Models;
+using GeoComment.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace GeoComment.Controller
     {
         private readonly GeoCommentDbContext _ctx;
         private readonly UserManager<User> _userManager;
+        private readonly CommentHandler _commentHandler;
 
-        public GeoCommentControllerPartTwo(GeoCommentDbContext ctx, UserManager<User> userManager)
+        public GeoCommentControllerPartTwo(GeoCommentDbContext ctx, UserManager<User> userManager, CommentHandler commentHandler)
         {
             _ctx = ctx;
             _userManager = userManager;
+            _commentHandler = commentHandler;
         }
 
         [ApiVersion("0.2")]
@@ -30,39 +33,20 @@ namespace GeoComment.Controller
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var newComment = new Comment()
-            {
-                Author = user.UserName,
-                Title = input.Body.title,
-                Latitude = input.latitude,
-                Longitude = input.longitude,
-                Message = input.Body.message
-            };
+            var newComment = _commentHandler.buildComment(input, user);
 
             await _ctx.Comments.AddAsync(newComment);
             await _ctx.SaveChangesAsync();
 
-            var inputComment = await _ctx.Comments.FirstAsync(ic =>
-                ic.Title == newComment.Title &&
-                ic.Author == newComment.Author &&
-                ic.Message == newComment.Message &&
-                ic.Latitude == newComment.Latitude &&
-                ic.Longitude == newComment.Longitude);
+            var storedComment = await _ctx.Comments.FirstAsync(sc =>
+                sc.Title == newComment.Title &&
+                sc.Author == newComment.Author &&
+                sc.Message == newComment.Message &&
+                sc.Latitude == newComment.Latitude &&
+                sc.Longitude == newComment.Longitude);
 
-            var comment = new NewComment()
-            {
-                Id = inputComment.Id,
-                latitude = inputComment.Latitude,
-                longitude = inputComment.Longitude,
-
-                Body = new Body()
-                {
-                    title = inputComment.Title,
-                    author = inputComment.Author,
-                    message = inputComment.Message,
-                }
-            };
-
+            var comment = _commentHandler.ReturnComment(storedComment);
+            
             return Created("", comment);
         }
         
@@ -75,19 +59,8 @@ namespace GeoComment.Controller
 
             var commentFromId = _ctx.Comments.First(c => c.Id == id);
 
-            var comment = new NewComment()
-            {
-                Id = commentFromId.Id,
-                latitude = commentFromId.Latitude,
-                longitude = commentFromId.Longitude,
-                Body = new Body()
-                {
-                    title = commentFromId.Title,
-                    author = commentFromId.Author,
-                    message = commentFromId.Message
-                }
-            };
-
+            var comment = _commentHandler.ReturnComment(commentFromId);
+           
             return Ok(comment);
         }
 
@@ -105,18 +78,8 @@ namespace GeoComment.Controller
 
             foreach (var usersComments in comments)
             {
-                var comment = new NewComment()
-                {
-                    Id = usersComments.Id,
-                    latitude = usersComments.Latitude,
-                    longitude = usersComments.Longitude,
-                    Body = new Body()
-                    {
-                        title = usersComments.Title,
-                        author = usersComments.Author,
-                        message = usersComments.Message
-                    }
-                };
+                var comment = _commentHandler.ReturnComment(usersComments);
+              
                 returnComments.Add(comment);
             }
             return returnComments.ToArray();
@@ -136,18 +99,8 @@ namespace GeoComment.Controller
 
             foreach (var usersComments in comments)
             {
-                var comment = new NewComment()
-                {
-                    Id = usersComments.Id,
-                    latitude = usersComments.Latitude,
-                    longitude = usersComments.Longitude,
-                    Body = new Body()
-                    {
-                        title = usersComments.Title,
-                        author = usersComments.Author,
-                        message = usersComments.Message
-                    }
-                };
+                var comment = _commentHandler.ReturnComment(usersComments);
+           
                 returnComments.Add(comment);
             }
             return returnComments.ToArray();
