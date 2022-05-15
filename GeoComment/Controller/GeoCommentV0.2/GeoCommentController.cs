@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeoComment.Controller
+namespace GeoComment.Controller.GeoCommentV0._2
 {
 
     [Route("api/geo-comments")]
     [ApiController]
-    public class GeoCommentControllerPartTwo : ControllerBase
+    public class GeoCommentController : ControllerBase
     {
         private readonly GeoCommentDbContext _ctx;
         private readonly UserManager<User> _userManager;
         private readonly CommentHandler _commentHandler;
 
-        public GeoCommentControllerPartTwo(GeoCommentDbContext ctx, UserManager<User> userManager, CommentHandler commentHandler)
+        public GeoCommentController(GeoCommentDbContext ctx, UserManager<User> userManager, CommentHandler commentHandler)
         {
             _ctx = ctx;
             _userManager = userManager;

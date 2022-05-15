@@ -4,7 +4,7 @@ using GeoComment.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeoComment.Controller
+namespace GeoComment.Controller.GeoCommentV0._1
 {
     [Route("api/geo-comments")]
     [ApiController]

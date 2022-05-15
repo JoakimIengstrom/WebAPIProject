@@ -14,7 +14,7 @@ namespace GeoComment.Controller
         }
 
         [ApiVersion("0.1")]
-        [ApiVersion("0.2")] //min postman behöver inte denna för att få pass!?!?!?!?
+        [ApiVersion("0.2")] 
         [Route("reset-db")]
         [HttpGet]
         public async Task<IActionResult> ResetDB()

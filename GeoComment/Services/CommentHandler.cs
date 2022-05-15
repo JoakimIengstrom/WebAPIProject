@@ -40,7 +40,6 @@ namespace GeoComment.Services
                     message = storedComment.Message,
                 }
             };
-
             return comment;
         }
     }
